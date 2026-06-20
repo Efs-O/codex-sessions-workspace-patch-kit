@@ -59,8 +59,3 @@ npm run scan
 ```
 
 If anchors are missing, the kit needs to be retargeted before applying again.
-
-## Publishing Status
-
-This repository is intended to stay private while the workflow, docs, and
-compatibility checks are finalized.
