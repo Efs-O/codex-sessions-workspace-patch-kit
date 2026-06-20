@@ -1,0 +1,21 @@
+# Local coordination and scratch files
+.coordination/
+debug-manifests.js
+
+# Forensic notes with local paths/session examples
+CODEX_SESSIONS_PATCH_*.md
+
+# Runtime outputs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Patch backups should live inside installed extension folders, not this repo
+.codex-sessions-patch-backups/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/

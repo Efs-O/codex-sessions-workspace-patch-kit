@@ -1,0 +1,13 @@
+{
+  "name": "codex-sessions-workspace-patch-kit",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Companion patch kit for workspace-safe Codex sessions in the shipped VS Code extension bundle.",
+  "scripts": {
+    "scan": "node src/index.js scan",
+    "apply": "node src/index.js apply",
+    "apply:dry": "node src/index.js apply --dry-run",
+    "restore": "node src/index.js restore",
+    "status": "node src/index.js status"
+  }
+}
