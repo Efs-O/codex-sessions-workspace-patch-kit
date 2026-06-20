@@ -7,6 +7,13 @@ This is not an upstream source patch and it is not a VS Code extension. It is a
 guarded local workaround that edits the installed extension bundle on disk after
 checking for known minified-code anchors.
 
+## Pre-Release Notice
+
+This is a pre-release workaround and may contain bugs. It patches minified
+extension code that can change without notice, so always run `scan` and
+`apply:dry` before applying it. Please report breakage, version drift, and
+workspace-history edge cases through GitHub Issues.
+
 ## What It Does
 
 When a VS Code workspace is open, the patch narrows Codex session history
