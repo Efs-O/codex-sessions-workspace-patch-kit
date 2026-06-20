@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate patch kit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check script syntax
+        run: node --check src/index.js
+
+      - name: Dry-run fixture patch
+        shell: bash
+        run: |
+          fixture="$RUNNER_TEMP/openai.chatgpt-fixture"
+          mkdir -p "$fixture/out"
+          cp .github/fixtures/openai.chatgpt/out/extension.js "$fixture/out/extension.js"
+          node src/index.js apply --dry-run --extension-root "$fixture"
+
