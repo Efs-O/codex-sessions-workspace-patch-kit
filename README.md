@@ -17,10 +17,16 @@ workspace-history edge cases through GitHub Issues.
 ## What It Does
 
 When a VS Code workspace is open, the patch narrows Codex session history
-responses to sessions whose saved `cwd` belongs to the current workspace roots.
-It also widens `thread/list` requests before filtering so older matching
-workspace sessions are less likely to be hidden behind newer sessions from other
-workspaces.
+responses to sessions whose saved `cwd` or `cwds` belong to the current
+workspace roots. It also widens supported `thread/list` requests before
+filtering so older matching workspace sessions are less likely to be hidden
+behind newer sessions from other workspaces.
+
+Some extension history surfaces request the same data through different
+providers. The patch tracks the native chat-session provider and the Codex
+webview provider, but it only filters responses that actually include workspace
+path metadata. Pathless responses are left unchanged to avoid blanking the
+sidebar.
 
 When no workspace folder is open, the patch leaves global history behavior
 unchanged.
