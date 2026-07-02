@@ -36,6 +36,8 @@ unchanged.
 - `scan` checks whether the installed bundle matches the expected anchors.
 - `apply:dry` simulates the patch and reports what would change.
 - `apply` creates a backup before writing the installed extension file.
+- `repair` safely reapplies the patch after VS Code installs a compatible fresh
+  extension bundle.
 - `restore` restores the latest backup created by this tool.
 - If the extension bundle changes shape, the tool reports missing anchors
   instead of guessing.
@@ -65,6 +67,19 @@ To undo the patch:
 npm run restore
 ```
 
+When VS Code installs a fresh compatible `openai.chatgpt-*` bundle, you can use
+the guarded repair flow:
+
+```powershell
+npm run repair
+```
+
+`repair` targets the newest installed bundle, exits successfully if it is
+already patched, and applies the patch only when every known anchor is still in
+its original unpatched state. If any anchor is missing, it reports `retarget
+needed` and makes no changes. If anchors are mixed between original, patched, or
+missing states, it reports `mixed state` and makes no changes.
+
 By default, the tool targets the newest installed extension folder matching
 `openai.chatgpt-*` under the current user's VS Code extensions directory.
 
@@ -73,6 +88,7 @@ You can target a specific extension root:
 ```powershell
 node src/index.js scan --extension-root "C:\path\to\openai.chatgpt-version"
 node src/index.js apply --extension-root "C:\path\to\openai.chatgpt-version"
+node src/index.js repair --extension-root "C:\path\to\openai.chatgpt-version"
 ```
 
 Reload VS Code after applying or restoring the patch.

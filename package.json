@@ -7,6 +7,7 @@
     "scan": "node src/index.js scan",
     "apply": "node src/index.js apply",
     "apply:dry": "node src/index.js apply --dry-run",
+    "repair": "node src/index.js repair",
     "restore": "node src/index.js restore",
     "status": "node src/index.js status"
   }

@@ -67,6 +67,12 @@ function main() {
       process.exit(report.ok ? 0 : 1);
     }
 
+    if (command === "repair") {
+      const report = repairInstallation(options);
+      printRepairReport(report);
+      process.exit(report.ok ? 0 : 1);
+    }
+
     if (command === "restore") {
       const report = restoreLatestBackup(options);
       printRestoreReport(report);
@@ -135,6 +141,7 @@ function usage(message) {
       "  node src/index.js status [--extension-root <path>]",
       "  node src/index.js scan [--extension-root <path>]",
       "  node src/index.js apply [--dry-run] [--extension-root <path>] [--backup-root <path>]",
+      "  node src/index.js repair [--extension-root <path>] [--backup-root <path>]",
       "  node src/index.js restore [--extension-root <path>] [--backup-root <path>]",
     ].join("\n")
   );
@@ -235,7 +242,74 @@ function applyPatches(options) {
           ? "Dry run completed. The v4 patch can be applied cleanly."
           : "V4 patch applied."
         : "Target files were already patched.",
+    };
+}
+
+function repairInstallation(options) {
+  const scan = scanInstallation(options);
+  const statusCounts = countPatchStatuses(scan.patchStates);
+
+  if (statusCounts.missing > 0) {
+    return {
+      ok: false,
+      outcome: "retarget needed",
+      extensionRoot: scan.extensionRoot,
+      targetReports: scan.targetReports,
+      patchStates: scan.patchStates,
+      dryRun: false,
+      changed: false,
+      backupDir: null,
+      message: "One or more patch anchors were not found. Retarget the patch before writing.",
+    };
+  }
+
+  if (statusCounts.patched === scan.patchStates.length) {
+    return {
+      ok: true,
+      outcome: "already patched",
+      extensionRoot: scan.extensionRoot,
+      targetReports: scan.targetReports,
+      patchStates: scan.patchStates,
+      dryRun: false,
+      changed: false,
+      backupDir: null,
+      message: "All patch anchors are already patched.",
+    };
+  }
+
+  if (statusCounts.original === scan.patchStates.length) {
+    const report = applyPatches({ ...options, dryRun: false });
+    return {
+      ...report,
+      outcome: report.ok && report.changed ? "repaired" : "already patched",
+      message:
+        report.ok && report.changed
+          ? "Repair completed. Backup created and patch applied."
+          : report.message,
+    };
+  }
+
+  return {
+    ok: false,
+    outcome: "mixed state",
+    extensionRoot: scan.extensionRoot,
+    targetReports: scan.targetReports,
+    patchStates: scan.patchStates,
+    dryRun: false,
+    changed: false,
+    backupDir: null,
+    message: "Patch anchors are in a mixed state. No automatic repair was attempted.",
   };
+}
+
+function countPatchStatuses(patchStates) {
+  return patchStates.reduce(
+    (counts, state) => {
+      counts[state.status] = (counts[state.status] || 0) + 1;
+      return counts;
+    },
+    { original: 0, patched: 0, missing: 0 }
+  );
 }
 
 function restoreLatestBackup(options) {
@@ -451,8 +525,13 @@ function assertExists(targetPath, label) {
 }
 
 function printReport(report) {
+  const alreadyPatched =
+    typeof report.alreadyPatched === "boolean"
+      ? report.alreadyPatched
+      : report.patchStates.every((state) => state.status === "patched");
+
   console.log(`[${PATCH_ID}] extension root: ${report.extensionRoot}`);
-  console.log(`[${PATCH_ID}] already patched: ${report.alreadyPatched ? "yes" : "no"}`);
+  console.log(`[${PATCH_ID}] already patched: ${alreadyPatched ? "yes" : "no"}`);
 
   for (const targetReport of report.targetReports) {
     console.log(`[${PATCH_ID}] target file: ${targetReport.targetFile}`);
@@ -465,6 +544,16 @@ function printReport(report) {
 function printApplyReport(report) {
   printReport(report);
   console.log(`[${PATCH_ID}] dry run: ${report.dryRun ? "yes" : "no"}`);
+  console.log(`[${PATCH_ID}] changed: ${report.changed ? "yes" : "no"}`);
+  if (report.backupDir) {
+    console.log(`[${PATCH_ID}] backup: ${report.backupDir}`);
+  }
+  console.log(`[${PATCH_ID}] ${report.message}`);
+}
+
+function printRepairReport(report) {
+  printReport(report);
+  console.log(`[${PATCH_ID}] outcome: ${report.outcome}`);
   console.log(`[${PATCH_ID}] changed: ${report.changed ? "yes" : "no"}`);
   if (report.backupDir) {
     console.log(`[${PATCH_ID}] backup: ${report.backupDir}`);
