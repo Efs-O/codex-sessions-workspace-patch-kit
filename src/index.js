@@ -13,30 +13,72 @@ const PATCHES = [
     targetRelativePath: path.join("out", "extension.js"),
     description:
       "Add extension-host helpers that filter thread/list results by the current VS Code workspace roots.",
-    find:
-      "var Xle=require(\"path\");U();Nt();var $g=B(require(\"vscode\"));U();Nt();Ba();",
-    replace:
-      "var Xle=require(\"path\");U();Nt();var $g=B(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=$g.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}U();Nt();Ba();",
+    candidates: [
+      {
+        find:
+          "var Xle=require(\"path\");U();Nt();var $g=B(require(\"vscode\"));U();Nt();Ba();",
+        replace:
+          "var Xle=require(\"path\");U();Nt();var $g=B(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=$g.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}U();Nt();Ba();",
+      },
+      {
+        find:
+          "var pue=j6e,GE=BE;U();Nt();var Ee=B(require(\"vscode\"));",
+        replace:
+          "var pue=j6e,GE=BE;U();Nt();var Ee=B(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=Ee.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}",
+      },
+      {
+        find:
+          "var sy=require(\"child_process\"),xde=require(\"path\");Mt();Ta();var Vi=U(require(\"vscode\"));ec();Hp();",
+        replace:
+          "var sy=require(\"child_process\"),xde=require(\"path\");Mt();Ta();var Vi=U(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=Vi.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}ec();Hp();",
+      },
+    ],
   },
   {
     id: "extension-host-track-thread-list-requests",
     targetRelativePath: path.join("out", "extension.js"),
     description:
       "Track thread/list request IDs so only those responses are workspace-filtered.",
-    find:
-      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new Eh",
-    replace:
-      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new Eh",
+    candidates: [
+      {
+        find:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new Eh",
+        replace:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new Eh",
+      },
+      {
+        find:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new Hh",
+        replace:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new Hh",
+      },
+    ],
   },
   {
     id: "extension-host-record-thread-list-requests",
     targetRelativePath: path.join("out", "extension.js"),
     description:
       "Record outgoing thread/list request IDs and widen thread/list pages before sending them to the app server.",
-    find:
-      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=t_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
-    replace:
-      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=t_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+    candidates: [
+      {
+        find:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=t_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+        replace:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=t_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+      },
+      {
+        find:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=r_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+        replace:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=r_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+      },
+      {
+        find:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=w_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+        replace:
+          "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=w_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+      },
+    ],
   },
   {
     id: "extension-host-filter-thread-list-responses",
@@ -189,7 +231,7 @@ function applyPatches(options) {
     for (const patch of report.patches) {
       const state = evaluatePatch(next, patch);
       if (state.status === "original") {
-        next = next.replace(patch.find, patch.replace);
+        next = next.replace(state.find, state.replace);
         changed = true;
       }
     }
@@ -488,22 +530,32 @@ function resolveBackupRoot(extensionRoot, options) {
 }
 
 function evaluatePatch(contents, patch) {
-  if (contents.includes(patch.replace)) {
-    return {
-      id: patch.id,
-      description: patch.description,
-      targetRelativePath: patch.targetRelativePath,
-      status: "patched",
-    };
+  const candidates = getPatchCandidates(patch);
+
+  for (const candidate of candidates) {
+    if (contents.includes(candidate.replace)) {
+      return {
+        id: patch.id,
+        description: patch.description,
+        targetRelativePath: patch.targetRelativePath,
+        status: "patched",
+        find: candidate.find,
+        replace: candidate.replace,
+      };
+    }
   }
 
-  if (contents.includes(patch.find)) {
-    return {
-      id: patch.id,
-      description: patch.description,
-      targetRelativePath: patch.targetRelativePath,
-      status: "original",
-    };
+  for (const candidate of candidates) {
+    if (contents.includes(candidate.find)) {
+      return {
+        id: patch.id,
+        description: patch.description,
+        targetRelativePath: patch.targetRelativePath,
+        status: "original",
+        find: candidate.find,
+        replace: candidate.replace,
+      };
+    }
   }
 
   return {
@@ -512,6 +564,18 @@ function evaluatePatch(contents, patch) {
     targetRelativePath: patch.targetRelativePath,
     status: "missing",
   };
+}
+
+function getPatchCandidates(patch) {
+  if (Array.isArray(patch.candidates)) {
+    return patch.candidates;
+  }
+
+  if (typeof patch.find === "string" && typeof patch.replace === "string") {
+    return [{ find: patch.find, replace: patch.replace }];
+  }
+
+  throw new Error(`Patch ${patch.id} has no usable anchor candidates.`);
 }
 
 function readUtf8(filePath) {
