@@ -15,6 +15,11 @@ const PATCHES = [
       "Add extension-host helpers that filter thread/list results by the current VS Code workspace roots.",
     candidates: [
       {
+        find: 'var zp=y(()=>{"use strict"});function pr(){',
+        replace:
+          'var zp=y(()=>{"use strict"});function codexSessionsPatchNormalizePath(e){if(typeof e!=="string"||e.length===0||e==="~")return null;let r=e.replace(/\\\\/g,"/").replace(/\\/+$/,"");return/^[a-zA-Z]:\\//.test(r)||r.startsWith("//")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd==="string"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e==="string"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=require("vscode").workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}function pr(){',
+      },
+      {
         find:
           "var Xle=require(\"path\");U();Nt();var $g=B(require(\"vscode\"));U();Nt();Ba();",
         replace:
@@ -42,6 +47,12 @@ const PATCHES = [
     candidates: [
       {
         find:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new jh",
+        replace:
+          "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new jh",
+      },
+      {
+        find:
           "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new Eh",
         replace:
           "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new Eh",
@@ -60,6 +71,12 @@ const PATCHES = [
     description:
       "Record outgoing thread/list request IDs and widen thread/list pages before sending them to the app server.",
     candidates: [
+      {
+        find:
+          'sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n==="turn/start"){let c=__(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}',
+        replace:
+          'sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e==="codex.chatSessionProvider"||e==="CodexWebviewProvider.webview")&&n==="thread/list"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n==="turn/start"){let c=__(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}',
+      },
       {
         find:
           "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=t_(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
